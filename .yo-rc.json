@@ -1,0 +1,24 @@
+{
+  "generator-jhipster": {
+    "baseName": "jhipstersample",
+    "packageName": "com.jhipster.sample",
+    "packageFolder": "com/jhipster/sample",
+    "authenticationType": "session",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": "no",
+    "websocket": "no",
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": "no",
+    "useSass": false,
+    "buildTool": "gradle",
+    "frontendBuilder": "grunt",
+    "enableTranslation": true,
+    "enableSocialSignIn": false,
+    "rememberMeKey": "5f42e03d99cb2856c090f337783cffa8dc9be84e",
+    "testFrameworks": [
+      "cucumber"
+    ]
+  }
+}
