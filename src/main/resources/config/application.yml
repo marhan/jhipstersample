@@ -59,9 +59,3 @@ jhipster:
         contact:
         license:
         licenseUrl:
-
-tomcat:
-    ajp:
-        port: 8009
-        remoteauthentication: false
-        enabled: false

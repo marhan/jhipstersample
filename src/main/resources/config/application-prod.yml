@@ -77,6 +77,3 @@ jhipster:
             port: 2003
             prefix: jhipstersample
 
-tomcat:
-    ajp:
-        enabled: true
