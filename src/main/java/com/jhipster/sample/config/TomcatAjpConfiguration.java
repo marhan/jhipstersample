@@ -2,6 +2,7 @@ package com.jhipster.sample.config;
 
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.valves.RemoteIpValve;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
@@ -10,14 +11,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TomcatAjpConfiguration {
 
-    //@Value("${tomcat.ajp.port}")
-    int ajpPort = 8009;
+    @Value("${tomcat.ajp.port}")
+    int ajpPort;
 
-    //@Value("${tomcat.ajp.remoteauthentication}")
-    String remoteAuthentication;
-
-    //@Value("${tomcat.ajp.enabled}")
-    boolean tomcatAjpEnabled = true;
+    @Value("${tomcat.ajp.enabled}")
+    boolean tomcatAjpEnabled;
 
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
@@ -33,6 +31,7 @@ public class TomcatAjpConfiguration {
         RemoteIpValve remoteIpValve = new RemoteIpValve();
         remoteIpValve.setRemoteIpHeader("x-forwarded-for");
         remoteIpValve.setProtocolHeader("x-forwarded-protocol");
+        remoteIpValve.setInternalProxies("");
         return remoteIpValve;
     }
 

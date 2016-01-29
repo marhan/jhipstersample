@@ -50,10 +50,6 @@ server:
     compression:
         enabled: true
         mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
-    tomcat:
-        internal-proxies: \\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}
-        remote_ip_header: x-forwarded-for
-        protocol_header: x-forwarded-proto
 
 # ===================================================================
 # JHipster specific properties
@@ -80,3 +76,7 @@ jhipster:
             host: localhost
             port: 2003
             prefix: jhipstersample
+
+tomcat:
+    ajp:
+        enabled: true
