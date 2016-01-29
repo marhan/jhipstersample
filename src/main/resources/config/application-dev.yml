@@ -47,7 +47,11 @@ liquibase:
     contexts: dev
 
 server:
-    port: 8080
+    port: 8185
+    use-forward-headers: true
+    tomcat:
+        remote_ip_header: x-forwarded-for
+        protocol_header: x-forwarded-proto
 
 # ===================================================================
 # JHipster specific properties
