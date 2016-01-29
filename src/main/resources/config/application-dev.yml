@@ -48,7 +48,7 @@ liquibase:
 
 server:
     port: 8185
-    use-forward-headers: false
+    use-forward-headers: true
     tomcat:
         internal-proxies:
         remote_ip_header: x-forwarded-for
