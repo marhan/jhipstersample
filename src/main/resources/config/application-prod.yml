@@ -21,9 +21,9 @@ spring:
     datasource:
         driver-class-name: org.postgresql.ds.PGSimpleDataSource
         url: jdbc:postgresql://marhan.de:5432/jhipstersample
-        name:
+        name: jhipstersample
         username: jhipstersample
-        password:
+        password: jhipstersample
     jpa:
         database-platform: com.jhipster.sample.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
@@ -46,9 +46,14 @@ liquibase:
 
 server:
     port: 8185
+    use-forward-headers: true
     compression:
         enabled: true
         mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
+    tomcat:
+        internal-proxies: \\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}
+        remote_ip_header: x-forwarded-for
+        protocol_header: x-forwarded-proto
 
 # ===================================================================
 # JHipster specific properties
