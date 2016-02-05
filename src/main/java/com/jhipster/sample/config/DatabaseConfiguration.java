@@ -1,13 +1,11 @@
 package com.jhipster.sample.config;
 
-import com.jhipster.sample.config.liquibase.AsyncSpringLiquibase;
-
 import com.codahale.metrics.MetricRegistry;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.jhipster.sample.config.liquibase.AsyncSpringLiquibase;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
-import org.h2.tools.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -25,7 +22,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.Arrays;
 
 @Configuration
@@ -73,18 +69,9 @@ public class DatabaseConfiguration {
         return new HikariDataSource(config);
     }
 
-    /**
-     * Open the TCP port for the H2 database, so it is available remotely.
-     */
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    @Profile(Constants.SPRING_PROFILE_DEVELOPMENT)
-    public Server h2TCPServer() throws SQLException {
-        return Server.createTcpServer("-tcp","-tcpAllowOthers");
-    }
-
     @Bean
     public SpringLiquibase liquibase(DataSource dataSource, DataSourceProperties dataSourceProperties,
-        LiquibaseProperties liquibaseProperties) {
+                                     LiquibaseProperties liquibaseProperties) {
 
         // Use liquibase.integration.spring.SpringLiquibase if you don't want Liquibase to start asynchronously
         SpringLiquibase liquibase = new AsyncSpringLiquibase();

@@ -19,17 +19,14 @@ spring:
         livereload:
             enabled: false # we use Grunt + BrowserSync for livereload
     datasource:
-        driver-class-name: org.h2.jdbcx.JdbcDataSource
-        url: jdbc:h2:mem:jhipstersample;DB_CLOSE_DELAY=-1
+        driver-class-name: org.postgresql.ds.PGSimpleDataSource
+        url: jdbc:postgresql://localhost:5432/jhipstersample
         name:
         username: jhipstersample
-        password:
-    h2:
-        console:
-            enabled: false
+        password: jhipstersample
     jpa:
-        database-platform: com.jhipster.sample.domain.util.FixedH2Dialect
-        database: H2
+        database-platform: com.jhipster.sample.domain.util.FixedPostgreSQL82Dialect
+        database: POSTGRESQL
         show_sql: true
         properties:
             hibernate.cache.use_second_level_cache: true
@@ -47,7 +44,7 @@ liquibase:
     contexts: dev
 
 server:
-    port: 8184
+    port: 8080
 
 # ===================================================================
 # JHipster specific properties
@@ -59,7 +56,7 @@ jhipster:
         ehcache:
             maxBytesLocalHeap: 16M
     mail: # specific JHipster mail property, for standard properties see MailProperties
-        from: jhipstersample@localhost
+        from: webmin@localhost
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
         spark:
@@ -70,4 +67,4 @@ jhipster:
             enabled: false
             host: localhost
             port: 2003
-            prefix: jhipstersample
+            prefix: test
