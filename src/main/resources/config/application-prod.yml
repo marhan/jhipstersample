@@ -77,3 +77,6 @@ jhipster:
             port: 2003
             prefix: jhipstersample
 
+
+server:
+    context-path: /jhipstersample
