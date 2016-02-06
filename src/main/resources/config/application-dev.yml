@@ -20,10 +20,10 @@ spring:
             enabled: false # we use Grunt + BrowserSync for livereload
     datasource:
         driver-class-name: org.postgresql.ds.PGSimpleDataSource
-        url: jdbc:postgresql://localhost:5432/jhipstersample
+        url: jdbc:postgresql://localhost:5432/dev-jhipstersample
         name:
-        username: jhipstersample
-        password: jhipstersample
+        username: developer
+        password: developer
     jpa:
         database-platform: com.jhipster.sample.domain.util.FixedPostgreSQL82Dialect
         database: POSTGRESQL
