@@ -1,0 +1,9 @@
+{
+    "jhipstersampleApp": {
+        "WeightUnit" : {
+            "null": "",
+            "KG": "KG",
+            "LB": "LB"
+        }
+    }
+}
