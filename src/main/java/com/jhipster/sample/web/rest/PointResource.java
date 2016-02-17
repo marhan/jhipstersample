@@ -3,6 +3,9 @@ package com.jhipster.sample.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.jhipster.sample.domain.Point;
 import com.jhipster.sample.repository.PointRepository;
+import com.jhipster.sample.repository.UserRepository;
+import com.jhipster.sample.security.AuthoritiesConstants;
+import com.jhipster.sample.security.SecurityUtils;
 import com.jhipster.sample.web.rest.util.HeaderUtil;
 import com.jhipster.sample.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -30,10 +33,13 @@ import java.util.Optional;
 public class PointResource {
 
     private final Logger log = LoggerFactory.getLogger(PointResource.class);
-        
+
     @Inject
     private PointRepository pointRepository;
-    
+
+    @Inject
+    private UserRepository userRepository;
+
     /**
      * POST  /points -> Create a new point.
      */
@@ -46,6 +52,12 @@ public class PointResource {
         if (point.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("point", "idexists", "A new point cannot already have an ID")).body(null);
         }
+
+        if(!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+            log.debug("No user passed in, using current user: {}", SecurityUtils.getCurrentUserLogin());
+            point.setUser(userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get());
+        }
+
         Point result = pointRepository.save(point);
         return ResponseEntity.created(new URI("/api/points/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("point", result.getId().toString()))
@@ -80,7 +92,7 @@ public class PointResource {
     public ResponseEntity<List<Point>> getAllPoints(Pageable pageable)
         throws URISyntaxException {
         log.debug("REST request to get a page of Points");
-        Page<Point> page = pointRepository.findAll(pageable); 
+        Page<Point> page = pointRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/points");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

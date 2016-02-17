@@ -94,7 +94,7 @@
             <label class="control-label" translate="jhipstersampleApp.point.notes" for="field_notes">Notes</label>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" has-role="ROLE_ADMIN">
             <label translate="jhipstersampleApp.point.user" for="field_user">user</label>
             <select class="form-control" id="field_user" name="user" ng-model="point.user"
                     ng-options="user as user.login for user in users track by user.id">
