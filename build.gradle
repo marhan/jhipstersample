@@ -57,9 +57,11 @@ task cucumberTest(type: Test) {
 test.finalizedBy(cucumberTest)
 
 if(!project.hasProperty('intellij')){
-    println 'IntelliJ config applied. Yeoman deactivated!'
     apply from: 'yeoman.gradle'
+} else {
+    println 'IntelliJ config applied. Yeoman deactivated!'
 }
+
 apply from: 'sonar.gradle'
 
 apply from: 'liquibase.gradle'
