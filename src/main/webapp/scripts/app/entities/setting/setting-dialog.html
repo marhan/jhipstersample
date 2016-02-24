@@ -1,0 +1,69 @@
+
+<form name="editForm" role="form" novalidate ng-submit="save()" show-validation>
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="clear()">&times;</button>
+        <h4 class="modal-title" id="mySettingLabel" translate="jhipstersampleApp.setting.home.createOrEditLabel">Create or edit a Setting</h4>
+    </div>
+    <div class="modal-body">
+        <jh-alert-error></jh-alert-error>
+        <div class="form-group">
+            <label for="id" translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="setting.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="jhipstersampleApp.setting.weeklyGoal" for="field_weeklyGoal">WeeklyGoal</label>
+            <input type="number" class="form-control" name="weeklyGoal" id="field_weeklyGoal"
+                    ng-model="setting.weeklyGoal"
+                    required min="10" max="21" />
+            <div ng-show="editForm.weeklyGoal.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.weeklyGoal.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.weeklyGoal.$error.min" translate="entity.validation.min" translate-value-min="10">
+                    This field should be more than 10.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.weeklyGoal.$error.max" translate="entity.validation.max" translate-value-max="21">
+                    This field cannot be more than 21.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.weeklyGoal.$error.number" translate="entity.validation.number">
+                    This field should be a number.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" translate="jhipstersampleApp.setting.weightUnit" for="field_weightUnit">WeightUnit</label>
+            <select class="form-control" name="weightUnit" ng-model="setting.weightUnit" id="field_weightUnit" required>
+                <option value="KG" translate="jhipstersampleApp.WeightUnit.KG">KG</option>
+                <option value="LB" translate="jhipstersampleApp.WeightUnit.LB">LB</option>
+            </select>
+            <div ng-show="editForm.weightUnit.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.weightUnit.$error.required" translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label translate="jhipstersampleApp.setting.user" for="field_user">user</label>
+            <select class="form-control" id="field_user" name="user" ng-model="setting.user" ng-options="user as user.login for user in users track by user.id">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

@@ -80,3 +80,8 @@ jhipster:
 
 server:
     context-path: /jhipstersample
+
+tomcat:
+    ajp:
+        enabled: true
+
