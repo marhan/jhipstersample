@@ -2,6 +2,7 @@ package com.jhipster.sample.web.rest;
 
 import com.jhipster.sample.Application;
 import com.jhipster.sample.domain.Point;
+import com.jhipster.sample.domain.User;
 import com.jhipster.sample.repository.PointRepository;
 import com.jhipster.sample.repository.UserRepository;
 import org.junit.Before;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -301,5 +303,50 @@ public class PointResourceIntTest {
         // Validate the database is empty
         List<Point> points = pointRepository.findAll();
         assertThat(points).hasSize(databaseSizeBeforeDelete - 1);
+    }
+
+    private void createPointsByWeek(LocalDate thisMonday, LocalDate lastMonday) {
+        User user = userRepository.findOneByLogin("user").get();
+        // Create points in two separate weeks
+        createPointWith(thisMonday.plusDays(2), true, true, true, user);
+        createPointWith(thisMonday.plusDays(3), true, true, false, user);
+        createPointWith(lastMonday.plusDays(3), false, false, true, user);
+        createPointWith(lastMonday.plusDays(4), true, true, false, user);
+    }
+
+    private void createPointWith(LocalDate localDate, boolean excercise, boolean meal, boolean alcohol, User user) {
+        point = new Point();
+        point.setDate(localDate);
+        point.setUser(user);
+        point.setAlcohol(alcohol);
+        point.setExercise(excercise);
+        point.setMeal(meal);
+        pointRepository.saveAndFlush(point);
+    }
+
+    @Test
+    @Transactional
+    public void getPointsThisWeek() throws Exception {
+        LocalDate thisMonday = LocalDate.of(2016, 2, 29);
+        LocalDate lastMonday = thisMonday.minusWeeks(1);
+        createPointsByWeek(thisMonday, lastMonday);
+        // create security-aware mockMvc
+        restPointMockMvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply(springSecurity())
+            .build();
+        // Get all the points
+        restPointMockMvc.perform(get("/api/points")
+            .with(user("user").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$", hasSize(4)));
+        // Get the points for this week only
+        restPointMockMvc.perform(get("/api/points-this-week")
+            .with(user("user").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.week").value(thisMonday.toString()))
+            .andExpect(jsonPath("$.points").value(5));
     }
 }

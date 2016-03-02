@@ -27,4 +27,11 @@ angular.module('jhipstersampleApp')
                 }
             }
         });
+    })
+    .factory('Points', function ($resource, DateUtils) {
+        return $resource('api/points/:id', {}, {
+            'query': { method: 'GET', isArray: true},
+            'thisWeek': { method: 'GET', isArray: false, url: 'api/points-this-week'},
+
+        });
     });

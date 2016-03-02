@@ -6,6 +6,7 @@ import com.jhipster.sample.repository.PointRepository;
 import com.jhipster.sample.repository.UserRepository;
 import com.jhipster.sample.security.AuthoritiesConstants;
 import com.jhipster.sample.security.SecurityUtils;
+import com.jhipster.sample.web.rest.dto.PointsPerWeek;
 import com.jhipster.sample.web.rest.util.HeaderUtil;
 import com.jhipster.sample.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
@@ -22,7 +23,11 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 /**
@@ -53,7 +58,7 @@ public class PointResource {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("point", "idexists", "A new point cannot already have an ID")).body(null);
         }
 
-        if(!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+        if (!SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
             log.debug("No user passed in, using current user: {}", SecurityUtils.getCurrentUserLogin());
             point.setUser(userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).get());
         }
@@ -95,9 +100,9 @@ public class PointResource {
 
         Page<Point> page;
 
-        if(SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
+        if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN)) {
             page = pointRepository.findAll(pageable);
-        } else  {
+        } else {
             page = pointRepository.findAllForCurrentUser(pageable);
         }
 
@@ -134,4 +139,46 @@ public class PointResource {
         pointRepository.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("point", id.toString())).build();
     }
+
+    /**
+     * GET  /points -> get all the points for the current week.
+     */
+    @RequestMapping(value = "/points-this-week")
+    @Timed
+    public ResponseEntity<PointsPerWeek> getPointsThisWeek() {
+        // Get current date
+        // Get first day of week
+        TemporalField fieldISO = WeekFields.of(Locale.GERMANY).dayOfWeek();
+        LocalDate startOfWeek = LocalDate.now().with(fieldISO, 1);
+        // Get last day of week
+        LocalDate endOfWeek = LocalDate.now().with(fieldISO, 0);
+        log.debug("Looking for points between: {} and {}", startOfWeek, endOfWeek);
+        List<Point> points = pointRepository.findAllByDateBetween(startOfWeek, endOfWeek);
+        // filter by current user and sum the points
+        Integer numPoints = points.stream()
+            .filter(p -> p.getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin()))
+            .mapToInt(p -> convertToInt(p))
+            .sum();
+        PointsPerWeek count = new PointsPerWeek(startOfWeek, numPoints);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
+    private int convertToInt(Point point) {
+        int counter = 0;
+
+        if (point.getAlcohol()) {
+            counter++;
+        }
+
+        if (point.getExercise()) {
+            counter++;
+        }
+
+        if (point.getMeal()) {
+            counter++;
+        }
+
+        return counter;
+    }
+
 }
